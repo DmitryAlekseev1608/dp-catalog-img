@@ -50,7 +50,10 @@
   .dp-dialog__close { position:absolute; top:14px; right:14px; border:none; background:transparent; font-size:20px; line-height:1; cursor:pointer; color:#6f6f6f; }
 
   /* --- Результаты поиска: карточки один в один с .product-card в Go --- */
-  .dp-results { padding:24px 0 32px; }
+  .dp-results { padding:16px 0 32px; }
+  .dp-results__back { margin:0 0 12px; }
+  .dp-results__back a { color:var(--sec); font-size:14px; }
+  .dp-results__back a:hover { color:var(--acc); }
   .dp-results h1 { font-size:34px; margin:0 0 12px; }
   .dp-results__status { color:var(--sec); margin:0 0 20px; }
   .dp-results__grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:20px; }
@@ -238,9 +241,13 @@
     var host = document.querySelector('.t-catalog') || document.querySelector('.js-catalog');
     if (!host) { setTimeout(function(){ runSearch(q); }, 400); return; }
     host.style.display = 'none';                      // прячем обычную выдачу ST300
+    var bh = document.querySelector('.js-block-header'); // и заголовок блока «Каталог»
+    if (bh) bh.style.display = 'none';
     var wrap = document.createElement('div');
     wrap.className = 'dp dp-results';
-    wrap.innerHTML = '<div class="dp-container"><h1>Результаты поиска: \u00ab' + esc(q) + '\u00bb</h1>'
+    wrap.innerHTML = '<div class="dp-container">'
+      + '<p class="dp-results__back"><a href="/catalog">\u2190 Весь каталог</a></p>'
+      + '<h1>Результаты поиска: \u00ab' + esc(q) + '\u00bb</h1>'
       + '<p class="dp-results__status">Ищем\u2026</p><div class="dp-results__grid"></div>'
       + '<div class="dp-results__more"></div></div>';
     host.parentNode.insertBefore(wrap, host);
