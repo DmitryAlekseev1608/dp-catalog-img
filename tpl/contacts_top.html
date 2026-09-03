@@ -76,7 +76,7 @@
   .dp-footer .dp-linkbtn { color:rgba(255,255,255,.85); font-size:17px; }
 
   @media (max-width:720px) {
-    .dp-container { padding:0 24px; }
+    /* .container в Go-приложении не меняет padding на мобильной — 40px везде */
     .dp h1 { font-size:26px; overflow-wrap:anywhere; }
     .dp-header__inner { flex-wrap:wrap; gap:8px; justify-content:space-between; }
     .dp-logo { order:1; }
@@ -90,7 +90,6 @@
     .dp-cart { order:4; padding:8px 10px; }
     .dp-cart__label { display:none; }
     .dp-hamburger { order:5; }
-    .dp-menu { padding:0 24px 16px; }
     .dp-footer__grid { grid-template-columns:1fr 1fr; }
     .dp-results h1 { font-size:26px; }
   }
@@ -146,9 +145,6 @@
   #rec3582610001 .t-input:focus { border-color:#ee5600 !important; outline:none !important; }
   #rec3582610001 .t-submit { background:#ee5600 !important; color:#fff !important; border:none !important; border-radius:6px !important; font-weight:600 !important; font-size:15px !important; box-shadow:0 0 20px rgba(234,44,0,.35); }
   #rec3582610001 .t-submit:hover { background:#d94e00 !important; }
-  @media (max-width:720px) {
-    #rec3582610001 .t-container { padding-left:24px !important; padding-right:24px !important; }
-  }
 </style>
 <div class="dp">
 <header class="dp-header">

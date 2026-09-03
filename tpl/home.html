@@ -76,7 +76,7 @@
   .dp-footer .dp-linkbtn { color:rgba(255,255,255,.85); font-size:17px; }
 
   @media (max-width:720px) {
-    .dp-container { padding:0 24px; }
+    /* .container в Go-приложении не меняет padding на мобильной — 40px везде */
     .dp h1 { font-size:26px; overflow-wrap:anywhere; }
     .dp-header__inner { flex-wrap:wrap; gap:8px; justify-content:space-between; }
     .dp-logo { order:1; }
@@ -90,7 +90,6 @@
     .dp-cart { order:4; padding:8px 10px; }
     .dp-cart__label { display:none; }
     .dp-hamburger { order:5; }
-    .dp-menu { padding:0 24px 16px; }
     .dp-footer__grid { grid-template-columns:1fr 1fr; }
     .dp-results h1 { font-size:26px; }
   }
@@ -145,7 +144,7 @@
   .dp-about__cols li { margin-bottom:8px; }
 
   @media (max-width:720px) {
-    .dp-hero { margin-left:-24px; margin-right:-24px; padding:32px 28px; text-align:center; justify-content:center; }
+    .dp-hero { margin-left:-40px; margin-right:-40px; padding:32px 28px; text-align:center; justify-content:center; }
     .dp-hero__text h1 { font-size:26px; }
     .dp-hero__text p { font-size:15px; }
     .dp-hero__image { flex:0 0 auto; }
