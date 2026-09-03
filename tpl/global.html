@@ -49,6 +49,21 @@
   .dp-dialog h3 { margin-top:0; font-weight:700; }
   .dp-dialog__close { position:absolute; top:14px; right:14px; border:none; background:transparent; font-size:20px; line-height:1; cursor:pointer; color:#6f6f6f; }
 
+  /* --- Результаты поиска: карточки один в один с .product-card в Go --- */
+  .dp-results { padding:24px 0 32px; }
+  .dp-results h1 { font-size:34px; margin:0 0 12px; }
+  .dp-results__status { color:var(--sec); margin:0 0 20px; }
+  .dp-results__grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:20px; }
+  .dp-scard { border:1px solid var(--border); border-radius:var(--r-md); padding:16px; display:flex; flex-direction:column; gap:10px; }
+  .dp-scard__imgwrap { display:block; }
+  .dp-scard__img { width:100%; height:auto; max-height:320px; display:block; object-fit:contain; border-radius:var(--r-sm); margin:0 auto; }
+  .dp-scard__noimg { display:block; height:180px; border-radius:var(--r-sm); background:var(--muted) url(https://raw.githubusercontent.com/DmitryAlekseev1608/dp-catalog-img/main/logo-512.png) center/45% no-repeat; opacity:.45; }
+  .dp-scard__name { font-weight:700; font-size:15px; display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:2; overflow:hidden; min-height:2.6em; }
+  .dp-scard__sku { color:var(--sec); font-size:12px; }
+  .dp-scard__price { color:var(--acc); font-weight:700; }
+  .dp-scard__btn { margin-top:auto; align-self:flex-start; padding:8px 16px; font-size:14px; }
+  .dp-results__more { margin-top:24px; }
+
   /* --- Подвал --- */
   .dp-footer { margin-top:64px; background:var(--acc); padding:32px 0; color:rgba(255,255,255,.85); font-size:17px; }
   .dp-footer a:hover, .dp-footer .dp-linkbtn:hover { color:#fff; }
@@ -74,6 +89,7 @@
     .dp-hamburger { order:5; }
     .dp-menu { padding:0 24px 16px; }
     .dp-footer__grid { grid-template-columns:1fr 1fr; }
+    .dp-results h1 { font-size:26px; }
   }
   @media (max-width:480px) {
     .dp-footer__grid { grid-template-columns:1fr; }
@@ -126,34 +142,100 @@
     var c = e.target.closest('.js-dp-dlg-close');
     if (c) { var dl = c.closest('dialog'); if (dl) dl.close(); return; }
   });
-  // Поиск из шапки: на /catalog отдаём запрос встроенному поиску Tilda,
-  // на остальных страницах — переход на /catalog?q=...
+  // --- Поиск по каталогу -------------------------------------------------
+  // У блока ST300 на этом тарифе Tilda текстового поиска нет (getfilters
+  // отдаёт search:false), а store-API не понимает параметр запроса. Поэтому
+  // ищем в браузере по заранее собранному индексу (scripts build_index.py).
+  var IDX_URL = 'https://raw.githubusercontent.com/DmitryAlekseev1608/dp-catalog-img/main/tpl/search-index.json';
+  var PAGE = 24;
+
+  function norm(s){ return (s || '').toLowerCase().replace(/ё/g, 'е'); }
+  function esc(s){ return (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  function money(v){ var n = parseFloat(v); if (!n && n !== 0) return 'Цена по запросу';
+    return n.toLocaleString('ru-RU') + ' \u20bd'; }
+
   var form = document.querySelector('.js-dp-search');
   if (form) form.addEventListener('submit', function(e){
-    var q = (form.querySelector('input[name=q]') || {}).value || '';
-    if (location.pathname.replace(/\/$/,'') === '/catalog') {
-      e.preventDefault();
-      if (dpApplyStoreSearch(q)) return;
-      location.href = '/catalog?q=' + encodeURIComponent(q);
-    }
+    var q = ((form.querySelector('input[name=q]') || {}).value || '').trim();
+    if (!q) { e.preventDefault(); return; }
+    e.preventDefault();
+    location.href = '/catalog?q=' + encodeURIComponent(q);
   });
-  function dpApplyStoreSearch(q){
-    var inp = document.querySelector('.t-store__search-input, .t-catalog__search-input, input[name="tsearch"]');
-    if (!inp) return false;
-    inp.value = q;
-    inp.dispatchEvent(new Event('input', {bubbles:true}));
-    inp.dispatchEvent(new Event('change', {bubbles:true}));
-    var f = inp.closest('form'); if (f) { try { f.requestSubmit ? f.requestSubmit() : f.submit(); } catch(_){} }
-    inp.dispatchEvent(new KeyboardEvent('keyup', {bubbles:true, key:'Enter', keyCode:13}));
-    return true;
-  }
-  // Подхватываем ?q= из адреса на странице каталога
-  var m = location.search.match(/[?&]q=([^&]*)/);
-  if (m && location.pathname.replace(/\/$/,'') === '/catalog') {
-    var q = decodeURIComponent(m[1].replace(/\+/g,' '));
+
+  var qm = location.search.match(/[?&]q=([^&]*)/);
+  if (qm && /^\/catalog\/?$/.test(location.pathname)) {
+    var q = decodeURIComponent(qm[1].replace(/\+/g, ' ')).trim();
     var box = document.querySelector('.js-dp-search input[name=q]'); if (box) box.value = q;
-    var tries = 0;
-    var t = setInterval(function(){ if (dpApplyStoreSearch(q) || ++tries > 40) clearInterval(t); }, 400);
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function(){ runSearch(q); });
+    else runSearch(q);
+  }
+
+  function runSearch(q){
+    var host = document.querySelector('.t-catalog') || document.querySelector('.js-catalog');
+    if (!host) { setTimeout(function(){ runSearch(q); }, 400); return; }
+    host.style.display = 'none';                      // прячем обычную выдачу ST300
+    var wrap = document.createElement('div');
+    wrap.className = 'dp dp-results';
+    wrap.innerHTML = '<div class="dp-container"><h1>Результаты поиска: \u00ab' + esc(q) + '\u00bb</h1>'
+      + '<p class="dp-results__status">Ищем\u2026</p><div class="dp-results__grid"></div>'
+      + '<div class="dp-results__more"></div></div>';
+    host.parentNode.insertBefore(wrap, host);
+    var status = wrap.querySelector('.dp-results__status');
+    var grid = wrap.querySelector('.dp-results__grid');
+    var more = wrap.querySelector('.dp-results__more');
+
+    fetch(IDX_URL).then(function(r){ return r.json(); }).then(function(data){
+      var terms = norm(q).split(/[^\p{L}\p{N}]+/u).filter(Boolean);
+      var hits = data.i.filter(function(it){
+        var hay = norm(it[0] + ' ' + it[1]);
+        for (var i = 0; i < terms.length; i++) if (hay.indexOf(terms[i]) === -1) return false;
+        return true;
+      });
+      if (!hits.length) {
+        status.textContent = 'Ничего не найдено по запросу \u00ab' + q + '\u00bb.';
+        more.innerHTML = '<a class="dp-btn dp-btn-secondary" href="/catalog">Вернуться в каталог</a>';
+        return;
+      }
+      status.textContent = 'Найдено товаров: ' + hits.length;
+      var shown = 0;
+      function render(){
+        var part = hits.slice(shown, shown + PAGE);
+        part.forEach(function(it){
+          var img = it[4] ? (/^https?:/.test(it[4]) ? it[4] : data.p + it[4]) : '';
+          var url = '/catalog/tproduct/' + it[3];
+          var card = document.createElement('div');
+          card.className = 'dp-scard';
+          card.innerHTML =
+            '<a class="dp-scard__imgwrap" href="' + url + '">' +
+              (img ? '<img class="dp-scard__img" src="' + esc(img) + '" alt="' + esc(it[0]) + '" loading="lazy">'
+                   : '<span class="dp-scard__noimg"></span>') +
+            '</a>' +
+            '<a class="dp-scard__name" href="' + url + '">' + esc(it[0]) + '</a>' +
+            (it[1] ? '<div class="dp-scard__sku">Артикул: ' + esc(it[1]) + '</div>' : '') +
+            '<div class="dp-scard__price">' + money(it[2]) + '</div>' +
+            '<button type="button" class="dp-btn dp-btn-primary dp-scard__btn">В корзину</button>';
+          card.querySelector('.dp-scard__btn').addEventListener('click', function(){
+            if (typeof window.tcart__addProduct !== 'function') { location.href = url; return; }
+            window.tcart__addProduct({ uid: it[3].split('-')[0], name: it[0], price: parseFloat(it[2]) || 0,
+              quantity: 1, sku: it[1], img: img, url: location.origin + url });
+          });
+          grid.appendChild(card);
+        });
+        shown += part.length;
+        more.innerHTML = '';
+        if (shown < hits.length) {
+          var b = document.createElement('button');
+          b.type = 'button'; b.className = 'dp-btn dp-btn-secondary'; b.textContent = 'Показать ещё';
+          b.addEventListener('click', render);
+          more.appendChild(b);
+        }
+      }
+      render();
+    }).catch(function(){
+      status.textContent = 'Не удалось загрузить поиск. Попробуйте выбрать раздел каталога.';
+      host.style.display = '';
+      wrap.querySelector('.dp-results__grid').remove();
+    });
   }
 })();
 </script>
