@@ -83,7 +83,12 @@
   #rec3583252201, #rec3583253601 { padding:0 !important; }
   #rec3580539201 { padding-top:16px !important; padding-bottom:48px !important; }
   #rec3580539201, #rec3580539201 * { font-family:"Comfortaa","Segoe UI",Arial,sans-serif !important; }
-  #rec3580539201 .t-container, #rec3580539201 .t-catalog__grid-cont { max-width:none !important; padding-left:40px !important; padding-right:40px !important; }
+  #rec3580539201 .t-container, #rec3580539201 .t-catalog__grid-cont { max-width:none !important; width:100% !important; padding-left:40px !important; padding-right:40px !important; }
+
+  /* Пустые квадраты-заглушки у названий разделов Tilda не рисуем — в Go-версии
+     чипы категорий чисто текстовые. */
+  #rec3580539201 .t-catalog__parts-image-wrapper, #rec3580539201 .t-catalog__parts-image-placeholder { display:none !important; }
+  #rec3580539201 .t-catalog__parts-switch-wrapper { justify-content:flex-start !important; }
 
   #rec3580539201 .t-section__title { font-size:34px !important; font-weight:700 !important; letter-spacing:-0.01em; text-align:left !important; margin:0 0 8px !important; }
   #rec3580539201 .t-section__descr { font-size:17px !important; color:#6f6f6f !important; text-align:left !important; max-width:none !important; margin:0 0 24px !important; }
@@ -114,7 +119,9 @@
     background-color:#eeeeee !important; opacity:.45; }
 
   /* Пагинация и «Загрузить ещё» */
-  #rec3580539201 .t-catalog__pagination__item.t-active, #rec3580539201 .t-pagination__item.t-active { background:#ee5600 !important; color:#fff !important; border-color:#ee5600 !important; }
+  #rec3580539201 .t-catalog__pagination { justify-content:flex-start !important; }
+  #rec3580539201 .t-catalog__pagination__item_active { background:#ee5600 !important; color:#fff !important; border-color:#ee5600 !important; }
+  #rec3580539201 .t-catalog__pagination__item { font-family:"Comfortaa","Segoe UI",Arial,sans-serif !important; }
 
   @media (max-width:720px) {
     #rec3580539201 .t-container, #rec3580539201 .t-catalog__grid-cont { padding-left:24px !important; padding-right:24px !important; }
