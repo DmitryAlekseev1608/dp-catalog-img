@@ -1,0 +1,152 @@
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;700&display=swap">
+<style>
+  .dp *, .dp-dialog * { box-sizing: border-box; }
+  .dp { --acc:#ee5600; --acc-dark:#d94e00; --acc-shadow:rgba(234,44,0,.35); --muted:#eeeeee; --sec:#6f6f6f; --ter:#555555; --border:#e2e2e2; --r-sm:8px; --r-md:14px; --r-lg:24px; --shadow:0 4px 18px rgba(0,0,0,.06);
+    font-family:"Comfortaa","Segoe UI",Arial,sans-serif; color:#000; background:#fff; line-height:1.5; }
+  .dp a { color:inherit; text-decoration:none; }
+  .dp h1,.dp h2,.dp h3 { font-weight:700; letter-spacing:-0.01em; }
+  .dp h1 { font-size:34px; margin:0 0 16px; }
+  .dp-container { width:100%; margin:0 auto; padding:0 40px; }
+
+  /* --- Шапка --- */
+  .dp-header { position:sticky; top:0; z-index:1000; background:rgba(255,255,255,.72); -webkit-backdrop-filter:blur(14px); backdrop-filter:blur(14px); box-shadow:0 8px 30px -12px rgba(0,0,0,.15); border-radius:0 0 30px 30px; padding:16px 0; }
+  .dp-header__inner { display:flex; align-items:center; gap:16px; }
+  .dp-logo { flex:0 0 auto; display:flex; }
+  .dp-logo img { width:46px; height:46px; border-radius:50%; }
+  .dp-search { display:flex; align-items:center; flex:1 1 auto; min-width:0; background:var(--muted); border-radius:10px; overflow:hidden; }
+  .dp-search input { flex:1 1 auto; min-width:0; border:none; background:transparent; padding:12px 0 12px 16px; font-family:inherit; font-size:15px; color:#000; }
+  .dp-search input:focus { outline:none; }
+  .dp-search button { flex:0 0 auto; display:flex; align-items:center; justify-content:center; width:44px; height:44px; border:none; background:transparent; color:var(--sec); cursor:pointer; }
+  .dp-search button:hover { color:var(--acc); }
+  .dp-search-toggle { display:none; align-items:center; justify-content:center; width:40px; height:40px; border:none; background:transparent; color:#000; cursor:pointer; flex:0 0 auto; padding:0; }
+  .dp-catbtn { display:inline-flex; align-items:center; flex:0 0 auto; border:2px solid var(--acc); border-radius:999px; padding:8px 16px; font-weight:600; font-size:14px; color:var(--acc); white-space:nowrap; }
+  .dp-catbtn:hover { background:var(--acc); color:#fff; }
+  .dp-cart { display:inline-flex; align-items:center; gap:6px; flex:0 0 auto; background:var(--acc); color:#fff; border-radius:999px; padding:8px 16px; font-weight:600; font-size:14px; box-shadow:0 0 20px var(--acc-shadow); white-space:nowrap; cursor:pointer; }
+  .dp-cart:hover { background:var(--acc-dark); color:#fff; }
+  .dp-hamburger { display:inline-flex; flex-direction:column; justify-content:center; gap:5px; width:40px; height:40px; border:none; background:transparent; cursor:pointer; padding:0; flex:0 0 auto; }
+  .dp-hamburger span { display:block; height:2px; width:22px; background:#000; border-radius:2px; }
+  .dp-menu { display:none; flex-direction:column; gap:4px; width:100%; margin:0 auto; padding:0 40px 16px; }
+  .dp-menu.is-open { display:flex; }
+  .dp-menu a, .dp-menu .dp-linkbtn { padding:10px 0; border-top:1px solid var(--border); font-size:15px; }
+  .dp-linkbtn { border:none; background:transparent; padding:0; font:inherit; color:inherit; cursor:pointer; text-align:left; }
+  .dp-linkbtn:hover { color:var(--acc); }
+  @media (min-width:721px) {
+    .dp-hamburger { display:none; }
+    .dp-menu { display:flex; flex-direction:row; align-items:center; gap:32px; padding:28px 40px 0; }
+    .dp-menu a, .dp-menu .dp-linkbtn { padding:0; border-top:none; font-size:17px; font-weight:600; }
+  }
+
+  /* --- Кнопки --- */
+  .dp-btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; border:none; border-radius:6px; padding:12px 22px; font-size:15px; font-weight:600; cursor:pointer; font-family:inherit; }
+  .dp-btn-primary { background:var(--acc); color:#fff; box-shadow:0 0 20px var(--acc-shadow); }
+  .dp-btn-primary:hover { background:var(--acc-dark); color:#fff; }
+  .dp-btn-secondary { background:var(--muted); color:#000; }
+  .dp-btn-secondary:hover { background:#e2e2e2; }
+
+  /* --- Диалог «Доставка и оплата» --- */
+  .dp-dialog { border:none; border-radius:14px; box-shadow:0 4px 18px rgba(0,0,0,.06); padding:28px; max-width:420px; width:calc(100% - 40px); font-family:"Comfortaa","Segoe UI",Arial,sans-serif; color:#000; line-height:1.5; position:fixed; }
+  .dp-dialog::backdrop { background:rgba(0,0,0,.4); }
+  .dp-dialog h3 { margin-top:0; font-weight:700; }
+  .dp-dialog__close { position:absolute; top:14px; right:14px; border:none; background:transparent; font-size:20px; line-height:1; cursor:pointer; color:#6f6f6f; }
+
+  /* --- Подвал --- */
+  .dp-footer { margin-top:64px; background:var(--acc); padding:32px 0; color:rgba(255,255,255,.85); font-size:17px; }
+  .dp-footer a:hover, .dp-footer .dp-linkbtn:hover { color:#fff; }
+  .dp-footer__grid { display:grid; grid-template-columns:repeat(3,1fr); gap:32px; overflow-wrap:break-word; }
+  .dp-footer__col h4 { color:#fff; font-size:19px; margin:0 0 14px; font-weight:700; }
+  .dp-footer__col ul { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:10px; }
+  .dp-footer .dp-linkbtn { color:rgba(255,255,255,.85); font-size:17px; }
+
+  @media (max-width:720px) {
+    .dp-container { padding:0 24px; }
+    .dp h1 { font-size:26px; overflow-wrap:anywhere; }
+    .dp-header__inner { flex-wrap:wrap; gap:8px; justify-content:space-between; }
+    .dp-logo { order:1; }
+    .dp-logo img { width:32px; height:32px; }
+    .dp-search-toggle { display:inline-flex; order:2; }
+    .dp-search { display:none; order:6; flex:1 1 100%; min-width:0; margin-top:10px; }
+    .dp-search.is-open { display:flex; }
+    .dp-search input { padding:8px 0 8px 10px; font-size:14px; }
+    .dp-search button { width:36px; height:36px; }
+    .dp-catbtn { order:3; padding:8px 12px; font-size:13px; }
+    .dp-cart { order:4; padding:8px 10px; }
+    .dp-cart__label { display:none; }
+    .dp-hamburger { order:5; }
+    .dp-menu { padding:0 24px 16px; }
+    .dp-footer__grid { grid-template-columns:1fr 1fr; }
+  }
+  @media (max-width:480px) {
+    .dp-footer__grid { grid-template-columns:1fr; }
+  }
+
+  /* Страница товара Tilda: шрифт и акценты как в Go-приложении */
+  html.dp-tproduct, html.dp-tproduct body, html.dp-tproduct body * {
+    font-family:"Comfortaa","Segoe UI",Arial,sans-serif !important; }
+  html.dp-tproduct .t-store__prod-popup__price-wrapper,
+  html.dp-tproduct .t-store__prod-popup__price { color:#ee5600 !important; font-weight:700 !important; }
+  html.dp-tproduct .t-store__prod-popup__btn-wrapper .t-btn,
+  html.dp-tproduct .t-store__prod-popup__btn-wrapper .t-btnflex {
+    background:#ee5600 !important; color:#fff !important; border-radius:6px !important; }
+  /* подвал у страницы товара — без верхнего отступа в 64px, он тут лишний */
+  html.dp-tproduct .dp-footer { margin-top:40px; }
+</style>
+<script>
+(function(){
+  var isProduct = /\/tproduct\//.test(location.pathname);
+  if (isProduct) document.documentElement.classList.add('dp-tproduct');
+  if (!document.querySelector('.dp-header')) {
+    var h = document.createElement('div');
+    h.innerHTML = "<div class=\"dp\">\n<header class=\"dp-header\">\n  <div class=\"dp-container dp-header__inner\">\n    <a class=\"dp-logo\" href=\"/\"><img src=\"https://raw.githubusercontent.com/DmitryAlekseev1608/dp-catalog-img/main/logo-512.png\" alt=\"\u0417\u0443\u0431\u043d\u043e\u0439 \u043f\u0430\u0440\u0442\u043d\u0451\u0440\"></a>\n    <button type=\"button\" class=\"dp-search-toggle js-dp-search-toggle\" aria-label=\"\u041f\u043e\u0438\u0441\u043a\"><svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"11\" cy=\"11\" r=\"7\"></circle><line x1=\"21\" y1=\"21\" x2=\"16.65\" y2=\"16.65\"></line></svg></button>\n    <form class=\"dp-search js-dp-search\" method=\"get\" action=\"/catalog\">\n      <input type=\"search\" name=\"q\" placeholder=\"\u041f\u043e\u0438\u0441\u043a \u043f\u043e \u043a\u0430\u0442\u0430\u043b\u043e\u0433\u0443\" aria-label=\"\u041f\u043e\u0438\u0441\u043a \u043f\u043e \u043a\u0430\u0442\u0430\u043b\u043e\u0433\u0443\">\n      <button type=\"submit\" aria-label=\"\u041d\u0430\u0439\u0442\u0438\"><svg viewBox=\"0 0 24 24\" width=\"18\" height=\"18\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"11\" cy=\"11\" r=\"7\"></circle><line x1=\"21\" y1=\"21\" x2=\"16.65\" y2=\"16.65\"></line></svg></button>\n    </form>\n    <a class=\"dp-catbtn\" href=\"/catalog\">\u041a\u0430\u0442\u0430\u043b\u043e\u0433</a>\n    <a class=\"dp-cart\" href=\"#opencart\" aria-label=\"\u041a\u043e\u0440\u0437\u0438\u043d\u0430\"><svg viewBox=\"0 0 24 24\" width=\"18\" height=\"18\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"9\" cy=\"21\" r=\"1\"></circle><circle cx=\"20\" cy=\"21\" r=\"1\"></circle><path d=\"M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6\"></path></svg><span class=\"dp-cart__label\">\u041a\u043e\u0440\u0437\u0438\u043d\u0430</span></a>\n    <button type=\"button\" class=\"dp-hamburger js-dp-hamburger\" aria-label=\"\u041e\u0442\u043a\u0440\u044b\u0442\u044c \u043c\u0435\u043d\u044e\" aria-expanded=\"false\"><span></span><span></span><span></span></button>\n  </div>\n  <nav class=\"dp-menu js-dp-menu\">\n    <a href=\"/#about\">\u041e \u043d\u0430\u0441</a>\n    <a href=\"/contacts\">\u041a\u043e\u043d\u0442\u0430\u043a\u0442\u044b</a>\n    <button type=\"button\" class=\"dp-linkbtn js-dp-delivery\">\u0414\u043e\u0441\u0442\u0430\u0432\u043a\u0430 \u0438 \u043e\u043f\u043b\u0430\u0442\u0430</button>\n    <a href=\"/contacts#form\">\u041e\u0441\u0442\u0430\u0432\u0438\u0442\u044c \u0437\u0430\u044f\u0432\u043a\u0443</a>\n    <a href=\"/account\">\u041b\u0438\u0447\u043d\u044b\u0439 \u043a\u0430\u0431\u0438\u043d\u0435\u0442</a>\n  </nav>\n</header>\n</div>";
+    while (h.firstChild) document.body.insertBefore(h.firstChild, document.body.firstChild);
+    var f = document.createElement('div');
+    f.innerHTML = "<div class=\"dp\">\n<footer class=\"dp-footer\" id=\"contacts\">\n  <div class=\"dp-container dp-footer__grid\">\n    <div class=\"dp-footer__col\">\n      <h4>\u041d\u0430\u0432\u0438\u0433\u0430\u0446\u0438\u044f</h4>\n      <ul>\n        <li><a href=\"/#about\">\u041e \u043d\u0430\u0441</a></li>\n        <li><a href=\"/contacts\">\u041a\u043e\u043d\u0442\u0430\u043a\u0442\u044b</a></li>\n        <li><a href=\"/contacts#form\">\u041e\u0441\u0442\u0430\u0432\u0438\u0442\u044c \u0437\u0430\u044f\u0432\u043a\u0443</a></li>\n        <li><a href=\"/account\">\u041b\u0438\u0447\u043d\u044b\u0439 \u043a\u0430\u0431\u0438\u043d\u0435\u0442</a></li>\n      </ul>\n    </div>\n    <div class=\"dp-footer__col\">\n      <h4>\u041f\u043e\u043a\u0443\u043f\u0430\u0442\u0435\u043b\u044f\u043c</h4>\n      <ul>\n        <li><a href=\"/catalog\">\u041a\u0430\u0442\u0430\u043b\u043e\u0433</a></li>\n        <li><button type=\"button\" class=\"dp-linkbtn js-dp-delivery\">\u0414\u043e\u0441\u0442\u0430\u0432\u043a\u0430 \u0438 \u043e\u043f\u043b\u0430\u0442\u0430</button></li>\n        <li><a href=\"/privacy\">\u041f\u043e\u043b\u0438\u0442\u0438\u043a\u0430 \u043e\u0431\u0440\u0430\u0431\u043e\u0442\u043a\u0438 \u043f\u0435\u0440\u0441\u043e\u043d\u0430\u043b\u044c\u043d\u044b\u0445 \u0434\u0430\u043d\u043d\u044b\u0445</a></li>\n      </ul>\n    </div>\n    <div class=\"dp-footer__col\">\n      <h4>\u041a\u043e\u043d\u0442\u0430\u043a\u0442\u044b</h4>\n      <ul>\n        <li><em>\u0412\u0440\u0435\u043c\u0435\u043d\u043d\u044b\u0435 \u043a\u043e\u043d\u0442\u0430\u043a\u0442\u044b \u2014 \u0437\u0430\u043f\u043e\u043b\u043d\u0438\u0442\u0435 \u0441\u0432\u043e\u0438\u043c\u0438:</em></li>\n        <li><a href=\"tel:+79000000000\">+7 (900) 000-00-00</a></li>\n        <li><a href=\"mailto:info@\u0437\u0443\u0431\u043d\u043e\u0439\u043f\u0430\u0440\u0442\u043d\u0451\u0440.\u0440\u0444\">info@\u0437\u0443\u0431\u043d\u043e\u0439\u043f\u0430\u0440\u0442\u043d\u0451\u0440.\u0440\u0444</a></li>\n        <li>\u0420\u043e\u0441\u0441\u0438\u044f</li>\n      </ul>\n    </div>\n  </div>\n</footer>\n</div>\n<dialog id=\"dp-dlg-delivery\" class=\"dp-dialog\">\n  <button type=\"button\" class=\"dp-dialog__close js-dp-dlg-close\" aria-label=\"\u0417\u0430\u043a\u0440\u044b\u0442\u044c\">&times;</button>\n  <h3>\u0414\u043e\u0441\u0442\u0430\u0432\u043a\u0430 \u0438 \u043e\u043f\u043b\u0430\u0442\u0430</h3>\n  <p>\u041e\u043d\u043b\u0430\u0439\u043d-\u043e\u043f\u043b\u0430\u0442\u0430 \u043d\u0430 \u0441\u0430\u0439\u0442\u0435 \u043d\u0435 \u043f\u0440\u043e\u0438\u0437\u0432\u043e\u0434\u0438\u0442\u0441\u044f. \u0412\u044b \u0441\u043e\u0431\u0438\u0440\u0430\u0435\u0442\u0435 \u043a\u043e\u0440\u0437\u0438\u043d\u0443 \u0438\u0437 \u043d\u0443\u0436\u043d\u044b\u0445 \u0442\u043e\u0432\u0430\u0440\u043e\u0432 \u0438 \u043e\u0442\u043f\u0440\u0430\u0432\u043b\u044f\u0435\u0442\u0435 \u0437\u0430\u044f\u0432\u043a\u0443 \u2014 \u043d\u0430\u0448 \u043c\u0435\u043d\u0435\u0434\u0436\u0435\u0440 \u0441\u0432\u044f\u0436\u0435\u0442\u0441\u044f \u0441 \u0432\u0430\u043c\u0438, \u0447\u0442\u043e\u0431\u044b \u0441\u043e\u0433\u043b\u0430\u0441\u043e\u0432\u0430\u0442\u044c \u0442\u043e\u0447\u043d\u0443\u044e \u0441\u0442\u043e\u0438\u043c\u043e\u0441\u0442\u044c, \u0441\u043f\u043e\u0441\u043e\u0431 \u043e\u043f\u043b\u0430\u0442\u044b \u0438 \u0441\u0440\u043e\u043a\u0438 \u0434\u043e\u0441\u0442\u0430\u0432\u043a\u0438.</p>\n  <p>\u0414\u043e\u0441\u0442\u0430\u0432\u043b\u044f\u0435\u043c \u043f\u043e \u0432\u0441\u0435\u0439 \u0420\u043e\u0441\u0441\u0438\u0438 \u0442\u0440\u0430\u043d\u0441\u043f\u043e\u0440\u0442\u043d\u044b\u043c\u0438 \u043a\u043e\u043c\u043f\u0430\u043d\u0438\u044f\u043c\u0438 \u0438 \u043a\u0443\u0440\u044c\u0435\u0440\u0441\u043a\u0438\u043c\u0438 \u0441\u043b\u0443\u0436\u0431\u0430\u043c\u0438 \u2014 \u0441\u043f\u043e\u0441\u043e\u0431 \u0438 \u0441\u0442\u043e\u0438\u043c\u043e\u0441\u0442\u044c \u0437\u0430\u0432\u0438\u0441\u044f\u0442 \u043e\u0442 \u0440\u0435\u0433\u0438\u043e\u043d\u0430 \u0438 \u0433\u0430\u0431\u0430\u0440\u0438\u0442\u043e\u0432 \u0437\u0430\u043a\u0430\u0437\u0430, \u0443\u0442\u043e\u0447\u043d\u044f\u044e\u0442\u0441\u044f \u043c\u0435\u043d\u0435\u0434\u0436\u0435\u0440\u043e\u043c \u0438\u043d\u0434\u0438\u0432\u0438\u0434\u0443\u0430\u043b\u044c\u043d\u043e.</p>\n</dialog>";
+    while (f.firstChild) document.body.appendChild(f.firstChild);
+  }
+})();
+</script>
+<script>
+(function(){
+  if (window.__dpShell) return; window.__dpShell = 1;
+  document.addEventListener('click', function(e){
+    var t = e.target.closest('.js-dp-search-toggle');
+    if (t) { var f = document.querySelector('.js-dp-search'); if (f) f.classList.toggle('is-open'); return; }
+    var h = e.target.closest('.js-dp-hamburger');
+    if (h) { var m = document.querySelector('.js-dp-menu'); if (m) { m.classList.toggle('is-open');
+      h.setAttribute('aria-expanded', m.classList.contains('is-open') ? 'true' : 'false'); } return; }
+    var d = e.target.closest('.js-dp-delivery');
+    if (d) { var dlg = document.getElementById('dp-dlg-delivery');
+      if (dlg && dlg.showModal) dlg.showModal(); e.preventDefault(); return; }
+    var c = e.target.closest('.js-dp-dlg-close');
+    if (c) { var dl = c.closest('dialog'); if (dl) dl.close(); return; }
+  });
+  // Поиск из шапки: на /catalog отдаём запрос встроенному поиску Tilda,
+  // на остальных страницах — переход на /catalog?q=...
+  var form = document.querySelector('.js-dp-search');
+  if (form) form.addEventListener('submit', function(e){
+    var q = (form.querySelector('input[name=q]') || {}).value || '';
+    if (location.pathname.replace(/\/$/,'') === '/catalog') {
+      e.preventDefault();
+      if (dpApplyStoreSearch(q)) return;
+      location.href = '/catalog?q=' + encodeURIComponent(q);
+    }
+  });
+  function dpApplyStoreSearch(q){
+    var inp = document.querySelector('.t-store__search-input, .t-catalog__search-input, input[name="tsearch"]');
+    if (!inp) return false;
+    inp.value = q;
+    inp.dispatchEvent(new Event('input', {bubbles:true}));
+    inp.dispatchEvent(new Event('change', {bubbles:true}));
+    var f = inp.closest('form'); if (f) { try { f.requestSubmit ? f.requestSubmit() : f.submit(); } catch(_){} }
+    inp.dispatchEvent(new KeyboardEvent('keyup', {bubbles:true, key:'Enter', keyCode:13}));
+    return true;
+  }
+  // Подхватываем ?q= из адреса на странице каталога
+  var m = location.search.match(/[?&]q=([^&]*)/);
+  if (m && location.pathname.replace(/\/$/,'') === '/catalog') {
+    var q = decodeURIComponent(m[1].replace(/\+/g,' '));
+    var box = document.querySelector('.js-dp-search input[name=q]'); if (box) box.value = q;
+    var tries = 0;
+    var t = setInterval(function(){ if (dpApplyStoreSearch(q) || ++tries > 40) clearInterval(t); }, 400);
+  }
+})();
+</script>
