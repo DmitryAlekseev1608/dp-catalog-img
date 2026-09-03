@@ -83,20 +83,25 @@
   #rec3583252201, #rec3583253601 { padding:0 !important; }
   #rec3580539201 { padding-top:16px !important; padding-bottom:48px !important; }
   #rec3580539201, #rec3580539201 * { font-family:"Comfortaa","Segoe UI",Arial,sans-serif !important; }
-  #rec3580539201 .t-container, #rec3580539201 .t-catalog__grid-cont { max-width:none !important; width:100% !important; padding-left:40px !important; padding-right:40px !important; }
-
-  /* Пустые квадраты-заглушки у названий разделов Tilda не рисуем — в Go-версии
-     чипы категорий чисто текстовые. */
-  #rec3580539201 .t-catalog__parts-image-wrapper, #rec3580539201 .t-catalog__parts-image-placeholder { display:none !important; }
-  #rec3580539201 .t-catalog__parts-switch-wrapper { justify-content:flex-start !important; }
+  #rec3580539201 .t-container, #rec3580539201 .t-catalog__grid-cont { max-width:none !important; width:100% !important; box-sizing:border-box !important; padding-left:40px !important; padding-right:40px !important; }
+  /* вложенный контейнер уже внутри отступов внешнего — иначе 40px удваиваются
+     и страница уезжает по горизонтали */
+  #rec3580539201 .t-catalog__grid-cont .t-container { padding-left:0 !important; padding-right:0 !important; }
 
   #rec3580539201 .t-section__title { font-size:34px !important; font-weight:700 !important; letter-spacing:-0.01em; text-align:left !important; margin:0 0 8px !important; }
-  #rec3580539201 .t-section__descr { font-size:17px !important; color:#6f6f6f !important; text-align:left !important; max-width:none !important; margin:0 0 24px !important; }
+  #rec3580539201 .t-section__descr { font-size:17px !important; color:#6f6f6f !important; text-align:left !important; max-width:none !important; margin:0 0 20px !important; }
 
-  /* Разделы каталога — «чипы», как .chip в Go-приложении */
-  #rec3580539201 .t-catalog__parts-switch-btn { border-radius:999px !important; border:1px solid #e2e2e2 !important; background:#eeeeee !important; color:#000 !important; font-size:14px !important; font-weight:600 !important; padding:8px 16px !important; }
+  /* Разделы каталога — компактные «чипы», как .chip в Go-приложении.
+     Пустые квадраты-заглушки изображений и min-height:70px Tilda убираем. */
+  #rec3580539201 .t-catalog__parts-image-wrapper, #rec3580539201 .t-catalog__parts-image-placeholder { display:none !important; }
+  #rec3580539201 .t-catalog__parts-switch-wrapper { justify-content:flex-start !important; gap:10px !important; }
+  #rec3580539201 .t-catalog__parts-switch-btn { min-height:0 !important; height:auto !important; gap:0 !important;
+    border-radius:999px !important; border:1px solid #e2e2e2 !important; background:#eeeeee !important; color:#000 !important;
+    font-size:14px !important; font-weight:600 !important; padding:8px 16px !important; opacity:1 !important; }
   #rec3580539201 .t-catalog__parts-switch-btn:hover { border-color:#ee5600 !important; color:#ee5600 !important; }
-  #rec3580539201 .t-catalog__parts-current, #rec3580539201 .t-catalog__parts-switch-btn.t-active { background:#ee5600 !important; border-color:#ee5600 !important; color:#fff !important; }
+  #rec3580539201 .t-catalog__parts-current { background:#ee5600 !important; border-color:#ee5600 !important; color:#fff !important; opacity:1 !important; }
+  #rec3580539201 .t-catalog__parts-current * { color:#fff !important; opacity:1 !important; }
+  #rec3580539201 .t-catalog__parts-above-item { margin:0 !important; }
 
   /* Карточка товара */
   #rec3580539201 .t-catalog__card { border:1px solid #e2e2e2; border-radius:14px; padding:16px; text-align:left !important; }
