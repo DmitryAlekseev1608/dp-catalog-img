@@ -157,20 +157,20 @@
   function money(v){ var n = parseFloat(v); if (!n && n !== 0) return 'Цена по запросу';
     return n.toLocaleString('ru-RU') + ' \u20bd'; }
 
-  var form = document.querySelector('.js-dp-search');
-  if (form) form.addEventListener('submit', function(e){
-    var q = ((form.querySelector('input[name=q]') || {}).value || '').trim();
-    if (!q) { e.preventDefault(); return; }
-    e.preventDefault();
-    location.href = '/catalog?q=' + encodeURIComponent(q);
-  });
+  // Сама форма — обычный GET на /catalog, JS для отправки не нужен: этот
+  // скрипт подключается и из <head> сайта, где разметки шапки ещё нет.
+  function onReady(fn){
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn);
+    else fn();
+  }
 
   var qm = location.search.match(/[?&]q=([^&]*)/);
   if (qm && /^\/catalog\/?$/.test(location.pathname)) {
     var q = decodeURIComponent(qm[1].replace(/\+/g, ' ')).trim();
-    var box = document.querySelector('.js-dp-search input[name=q]'); if (box) box.value = q;
-    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function(){ runSearch(q); });
-    else runSearch(q);
+    onReady(function(){
+      var box = document.querySelector('.js-dp-search input[name=q]'); if (box) box.value = q;
+      runSearch(q);
+    });
   }
 
   function runSearch(q){
