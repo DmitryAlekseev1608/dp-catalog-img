@@ -1,0 +1,260 @@
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;700&display=swap">
+<style>
+  .dp *, .dp-dialog * { box-sizing: border-box; }
+  .dp { --acc:#ee5600; --acc-dark:#d94e00; --acc-shadow:rgba(234,44,0,.35); --muted:#eeeeee; --sec:#6f6f6f; --ter:#555555; --border:#e2e2e2; --r-sm:8px; --r-md:14px; --r-lg:24px; --shadow:0 4px 18px rgba(0,0,0,.06);
+    font-family:"Comfortaa","Segoe UI",Arial,sans-serif; color:#000; background:#fff; line-height:1.5; }
+  .dp a { color:inherit; text-decoration:none; }
+  .dp h1,.dp h2,.dp h3 { font-weight:700; letter-spacing:-0.01em; }
+  .dp h1 { font-size:34px; margin:0 0 16px; }
+  .dp-container { width:100%; margin:0 auto; padding:0 40px; }
+
+  /* --- Шапка --- */
+  .dp-header { position:sticky; top:0; z-index:1000; background:rgba(255,255,255,.72); -webkit-backdrop-filter:blur(14px); backdrop-filter:blur(14px); box-shadow:0 8px 30px -12px rgba(0,0,0,.15); border-radius:0 0 30px 30px; padding:16px 0; }
+  .dp-header__inner { display:flex; align-items:center; gap:16px; }
+  .dp-logo { flex:0 0 auto; display:flex; }
+  .dp-logo img { width:46px; height:46px; border-radius:50%; }
+  .dp-search { display:flex; align-items:center; flex:1 1 auto; min-width:0; background:var(--muted); border-radius:10px; overflow:hidden; }
+  .dp-search input { flex:1 1 auto; min-width:0; border:none; background:transparent; padding:12px 0 12px 16px; font-family:inherit; font-size:15px; color:#000; }
+  .dp-search input:focus { outline:none; }
+  .dp-search button { flex:0 0 auto; display:flex; align-items:center; justify-content:center; width:44px; height:44px; border:none; background:transparent; color:var(--sec); cursor:pointer; }
+  .dp-search button:hover { color:var(--acc); }
+  .dp-search-toggle { display:none; align-items:center; justify-content:center; width:40px; height:40px; border:none; background:transparent; color:#000; cursor:pointer; flex:0 0 auto; padding:0; }
+  .dp-catbtn { display:inline-flex; align-items:center; flex:0 0 auto; border:2px solid var(--acc); border-radius:999px; padding:8px 16px; font-weight:600; font-size:14px; color:var(--acc); white-space:nowrap; }
+  .dp-catbtn:hover { background:var(--acc); color:#fff; }
+  .dp-cart { display:inline-flex; align-items:center; gap:6px; flex:0 0 auto; background:var(--acc); color:#fff; border-radius:999px; padding:8px 16px; font-weight:600; font-size:14px; box-shadow:0 0 20px var(--acc-shadow); white-space:nowrap; cursor:pointer; }
+  .dp-cart:hover { background:var(--acc-dark); color:#fff; }
+  .dp-hamburger { display:inline-flex; flex-direction:column; justify-content:center; gap:5px; width:40px; height:40px; border:none; background:transparent; cursor:pointer; padding:0; flex:0 0 auto; }
+  .dp-hamburger span { display:block; height:2px; width:22px; background:#000; border-radius:2px; }
+  .dp-menu { display:none; flex-direction:column; gap:4px; width:100%; margin:0 auto; padding:0 40px 16px; }
+  .dp-menu.is-open { display:flex; }
+  .dp-menu a, .dp-menu .dp-linkbtn { padding:10px 0; border-top:1px solid var(--border); font-size:15px; }
+  .dp-linkbtn { border:none; background:transparent; padding:0; font:inherit; color:inherit; cursor:pointer; text-align:left; }
+  .dp-linkbtn:hover { color:var(--acc); }
+  @media (min-width:721px) {
+    .dp-hamburger { display:none; }
+    .dp-menu { display:flex; flex-direction:row; align-items:center; gap:32px; padding:28px 40px 0; }
+    .dp-menu a, .dp-menu .dp-linkbtn { padding:0; border-top:none; font-size:17px; font-weight:600; }
+  }
+
+  /* --- Кнопки --- */
+  .dp-btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; border:none; border-radius:6px; padding:12px 22px; font-size:15px; font-weight:600; cursor:pointer; font-family:inherit; }
+  .dp-btn-primary { background:var(--acc); color:#fff; box-shadow:0 0 20px var(--acc-shadow); }
+  .dp-btn-primary:hover { background:var(--acc-dark); color:#fff; }
+  .dp-btn-secondary { background:var(--muted); color:#000; }
+  .dp-btn-secondary:hover { background:#e2e2e2; }
+
+  /* --- Диалог «Доставка и оплата» --- */
+  .dp-dialog { border:none; border-radius:14px; box-shadow:0 4px 18px rgba(0,0,0,.06); padding:28px; max-width:420px; width:calc(100% - 40px); font-family:"Comfortaa","Segoe UI",Arial,sans-serif; color:#000; line-height:1.5; position:fixed; }
+  .dp-dialog::backdrop { background:rgba(0,0,0,.4); }
+  .dp-dialog h3 { margin-top:0; font-weight:700; }
+  .dp-dialog__close { position:absolute; top:14px; right:14px; border:none; background:transparent; font-size:20px; line-height:1; cursor:pointer; color:#6f6f6f; }
+
+  /* --- Подвал --- */
+  .dp-footer { margin-top:64px; background:var(--acc); padding:32px 0; color:rgba(255,255,255,.85); font-size:17px; }
+  .dp-footer a:hover, .dp-footer .dp-linkbtn:hover { color:#fff; }
+  .dp-footer__grid { display:grid; grid-template-columns:repeat(3,1fr); gap:32px; overflow-wrap:break-word; }
+  .dp-footer__col h4 { color:#fff; font-size:19px; margin:0 0 14px; font-weight:700; }
+  .dp-footer__col ul { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:10px; }
+  .dp-footer .dp-linkbtn { color:rgba(255,255,255,.85); font-size:17px; }
+
+  @media (max-width:720px) {
+    .dp-container { padding:0 24px; }
+    .dp h1 { font-size:26px; overflow-wrap:anywhere; }
+    .dp-header__inner { flex-wrap:wrap; gap:8px; justify-content:space-between; }
+    .dp-logo { order:1; }
+    .dp-logo img { width:32px; height:32px; }
+    .dp-search-toggle { display:inline-flex; order:2; }
+    .dp-search { display:none; order:6; flex:1 1 100%; min-width:0; margin-top:10px; }
+    .dp-search.is-open { display:flex; }
+    .dp-search input { padding:8px 0 8px 10px; font-size:14px; }
+    .dp-search button { width:36px; height:36px; }
+    .dp-catbtn { order:3; padding:8px 12px; font-size:13px; }
+    .dp-cart { order:4; padding:8px 10px; }
+    .dp-cart__label { display:none; }
+    .dp-hamburger { order:5; }
+    .dp-menu { padding:0 24px 16px; }
+    .dp-footer__grid { grid-template-columns:1fr 1fr; }
+  }
+  @media (max-width:480px) {
+    .dp-footer__grid { grid-template-columns:1fr; }
+  }
+
+  /* --- Типовые страницы (политика, контакты, кабинет) --- */
+  .dp-page { padding:32px 0 8px; }
+  .dp-page h1 { font-size:34px; margin:0 0 12px; }
+  .dp-lead { color:#6f6f6f; font-size:16px; line-height:1.6; max-width:820px; margin:0 0 32px; }
+  .dp-cards { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:16px; }
+  .dp-card { background:var(--muted); border-radius:var(--r-md); padding:22px; }
+  .dp-card h3 { font-size:14px; text-transform:uppercase; letter-spacing:.04em; color:var(--sec); margin:0 0 8px; }
+  .dp-card a, .dp-card p { font-size:17px; color:#000; margin:0; line-height:1.5; }
+  .dp-card a:hover { color:var(--acc); }
+  .dp-note { color:var(--sec); font-size:14px; margin-top:28px; max-width:820px; line-height:1.6; }
+  .dp-steps { counter-reset:s; list-style:none; margin:24px 0 0; padding:0; display:grid; gap:14px; max-width:820px; }
+  .dp-steps li { counter-increment:s; position:relative; padding-left:44px; color:#3a3a3a; line-height:1.6; }
+  .dp-steps li::before { content:counter(s); position:absolute; left:0; top:0; width:28px; height:28px; border-radius:50%; background:var(--acc); color:#fff; font-weight:700; font-size:14px; display:flex; align-items:center; justify-content:center; }
+  .dp-actions { display:flex; gap:12px; flex-wrap:wrap; margin-top:28px; }
+
+  /* --- Правовые страницы --- */
+  .dp-legal { padding:32px 0 24px; }
+  .dp-legal__badge { display:inline-block; background:#fff3e8; color:#b23c00; border:1px solid #ffd0aa; border-radius:6px; padding:6px 12px; font-size:13px; font-weight:600; margin-bottom:20px; }
+  .dp-legal h1 { font-size:34px; font-weight:700; margin:0 0 16px; }
+  .dp-legal__intro { color:#6f6f6f; font-size:15px; line-height:1.65; max-width:820px; }
+  .dp-legal__operator { background:var(--muted); border-radius:12px; padding:20px 24px; margin:28px 0; font-size:14px; line-height:1.9; }
+  .dp-legal__fill { color:#b23c00; font-style:italic; }
+  .dp-legal__toc { margin:28px 0; }
+  .dp-legal__toc h2 { font-size:16px; margin:0 0 10px; }
+  .dp-legal__toc ol { margin:0; padding-left:22px; color:#6f6f6f; line-height:1.9; }
+  .dp-legal__toc a { color:#6f6f6f; }
+  .dp-legal__toc a:hover { color:var(--acc); }
+  .dp-legal section { margin-top:32px; }
+  .dp-legal h2.dp-legal__st { font-size:20px; font-weight:700; margin:0 0 12px; }
+  .dp-legal p { color:#3a3a3a; font-size:15px; line-height:1.7; max-width:900px; }
+  .dp-legal code { background:var(--muted); border-radius:4px; padding:1px 6px; font-size:13px; }
+  .dp-legal ul { color:#3a3a3a; font-size:15px; line-height:1.7; max-width:900px; }
+</style>
+<div class="dp">
+<header class="dp-header">
+  <div class="dp-container dp-header__inner">
+    <a class="dp-logo" href="/"><img src="https://raw.githubusercontent.com/DmitryAlekseev1608/dp-catalog-img/main/logo-512.png" alt="Зубной партнёр"></a>
+    <button type="button" class="dp-search-toggle js-dp-search-toggle" aria-label="Поиск"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></button>
+    <form class="dp-search js-dp-search" method="get" action="/catalog">
+      <input type="search" name="q" placeholder="Поиск по каталогу" aria-label="Поиск по каталогу">
+      <button type="submit" aria-label="Найти"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></button>
+    </form>
+    <a class="dp-catbtn" href="/catalog">Каталог</a>
+    <a class="dp-cart" href="#opencart" aria-label="Корзина"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg><span class="dp-cart__label">Корзина</span></a>
+    <button type="button" class="dp-hamburger js-dp-hamburger" aria-label="Открыть меню" aria-expanded="false"><span></span><span></span><span></span></button>
+  </div>
+  <nav class="dp-menu js-dp-menu">
+    <a href="/#about">О нас</a>
+    <a href="/contacts">Контакты</a>
+    <button type="button" class="dp-linkbtn js-dp-delivery">Доставка и оплата</button>
+    <a href="/contacts#form">Оставить заявку</a>
+    <a href="/account">Личный кабинет</a>
+  </nav>
+</header>
+</div>
+<div class="dp">
+<main class="dp-page dp-container">
+  <h1>Личный кабинет</h1>
+  <p class="dp-lead">Онлайн-оплаты на сайте нет, поэтому и регистрация не нужна: вы собираете корзину и отправляете заявку, а менеджер связывается с вами, чтобы согласовать состав заказа, цену, оплату и доставку. История ваших обращений хранится у менеджера — назовите номер телефона, с которого оставляли заявку, и он поднимет её.</p>
+
+  <h2 class="dp-legal__st">Как оформить заказ</h2>
+  <ol class="dp-steps">
+    <li>Выберите товары в <a href="/catalog" style="color:#ee5600;font-weight:600;">каталоге</a> и добавьте их в корзину кнопкой «В корзину».</li>
+    <li>Откройте корзину в шапке сайта и проверьте состав заявки.</li>
+    <li>Нажмите «Оставить заявку» и укажите имя и телефон — этого достаточно.</li>
+    <li>Менеджер перезвонит в рабочее время, согласует цену, способ оплаты и доставку.</li>
+  </ol>
+
+  <div class="dp-cards" style="margin-top:36px;">
+    <div class="dp-card">
+      <h3>Статус заявки</h3>
+      <p>Уточняйте у менеджера по телефону, с которого оставляли заявку.</p>
+    </div>
+    <div class="dp-card">
+      <h3>Телефон</h3>
+      <a href="tel:+79000000000">+7 (900) 000-00-00</a>
+    </div>
+    <div class="dp-card">
+      <h3>Email</h3>
+      <a href="mailto:info@зубнойпартнёр.рф">info@зубнойпартнёр.рф</a>
+    </div>
+    <div class="dp-card">
+      <h3>Режим работы</h3>
+      <p>Пн–Пт, 9:00–18:00 (МСК)</p>
+    </div>
+  </div>
+
+  <div class="dp-actions">
+    <a class="dp-btn dp-btn-primary" href="/contacts#form">Оставить заявку</a>
+    <a class="dp-btn dp-btn-secondary" href="/catalog">Перейти в каталог</a>
+  </div>
+
+  <p class="dp-note">Персональный кабинет с историей заказов и паролем появится позже — сейчас все заявки обрабатываются менеджером вручную. Порядок обработки данных описан в <a href="/privacy" style="color:#ee5600;">Политике обработки персональных данных</a>.</p>
+</main>
+</div>
+<div class="dp">
+<footer class="dp-footer" id="contacts">
+  <div class="dp-container dp-footer__grid">
+    <div class="dp-footer__col">
+      <h4>Навигация</h4>
+      <ul>
+        <li><a href="/#about">О нас</a></li>
+        <li><a href="/contacts">Контакты</a></li>
+        <li><a href="/contacts#form">Оставить заявку</a></li>
+        <li><a href="/account">Личный кабинет</a></li>
+      </ul>
+    </div>
+    <div class="dp-footer__col">
+      <h4>Покупателям</h4>
+      <ul>
+        <li><a href="/catalog">Каталог</a></li>
+        <li><button type="button" class="dp-linkbtn js-dp-delivery">Доставка и оплата</button></li>
+        <li><a href="/privacy">Политика обработки персональных данных</a></li>
+      </ul>
+    </div>
+    <div class="dp-footer__col">
+      <h4>Контакты</h4>
+      <ul>
+        <li><em>Временные контакты — заполните своими:</em></li>
+        <li><a href="tel:+79000000000">+7 (900) 000-00-00</a></li>
+        <li><a href="mailto:info@зубнойпартнёр.рф">info@зубнойпартнёр.рф</a></li>
+        <li>Россия</li>
+      </ul>
+    </div>
+  </div>
+</footer>
+</div>
+<dialog id="dp-dlg-delivery" class="dp-dialog">
+  <button type="button" class="dp-dialog__close js-dp-dlg-close" aria-label="Закрыть">&times;</button>
+  <h3>Доставка и оплата</h3>
+  <p>Онлайн-оплата на сайте не производится. Вы собираете корзину из нужных товаров и отправляете заявку — наш менеджер свяжется с вами, чтобы согласовать точную стоимость, способ оплаты и сроки доставки.</p>
+  <p>Доставляем по всей России транспортными компаниями и курьерскими службами — способ и стоимость зависят от региона и габаритов заказа, уточняются менеджером индивидуально.</p>
+</dialog>
+<script>
+(function(){
+  if (window.__dpShell) return; window.__dpShell = 1;
+  document.addEventListener('click', function(e){
+    var t = e.target.closest('.js-dp-search-toggle');
+    if (t) { var f = document.querySelector('.js-dp-search'); if (f) f.classList.toggle('is-open'); return; }
+    var h = e.target.closest('.js-dp-hamburger');
+    if (h) { var m = document.querySelector('.js-dp-menu'); if (m) { m.classList.toggle('is-open');
+      h.setAttribute('aria-expanded', m.classList.contains('is-open') ? 'true' : 'false'); } return; }
+    var d = e.target.closest('.js-dp-delivery');
+    if (d) { var dlg = document.getElementById('dp-dlg-delivery');
+      if (dlg && dlg.showModal) dlg.showModal(); e.preventDefault(); return; }
+    var c = e.target.closest('.js-dp-dlg-close');
+    if (c) { var dl = c.closest('dialog'); if (dl) dl.close(); return; }
+  });
+  // Поиск из шапки: на /catalog отдаём запрос встроенному поиску Tilda,
+  // на остальных страницах — переход на /catalog?q=...
+  var form = document.querySelector('.js-dp-search');
+  if (form) form.addEventListener('submit', function(e){
+    var q = (form.querySelector('input[name=q]') || {}).value || '';
+    if (location.pathname.replace(/\/$/,'') === '/catalog') {
+      e.preventDefault();
+      if (dpApplyStoreSearch(q)) return;
+      location.href = '/catalog?q=' + encodeURIComponent(q);
+    }
+  });
+  function dpApplyStoreSearch(q){
+    var inp = document.querySelector('.t-store__search-input, .t-catalog__search-input, input[name="tsearch"]');
+    if (!inp) return false;
+    inp.value = q;
+    inp.dispatchEvent(new Event('input', {bubbles:true}));
+    inp.dispatchEvent(new Event('change', {bubbles:true}));
+    var f = inp.closest('form'); if (f) { try { f.requestSubmit ? f.requestSubmit() : f.submit(); } catch(_){} }
+    inp.dispatchEvent(new KeyboardEvent('keyup', {bubbles:true, key:'Enter', keyCode:13}));
+    return true;
+  }
+  // Подхватываем ?q= из адреса на странице каталога
+  var m = location.search.match(/[?&]q=([^&]*)/);
+  if (m && location.pathname.replace(/\/$/,'') === '/catalog') {
+    var q = decodeURIComponent(m[1].replace(/\+/g,' '));
+    var box = document.querySelector('.js-dp-search input[name=q]'); if (box) box.value = q;
+    var tries = 0;
+    var t = setInterval(function(){ if (dpApplyStoreSearch(q) || ++tries > 40) clearInterval(t); }, 400);
+  }
+})();
+</script>
